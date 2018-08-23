@@ -29,8 +29,6 @@ int getch(void)
 void listing()
 {
 	
-	ofstream cout;
-        cout.open("/dev/pts/0",ios::out);
 	struct stat buf;
 	struct tm *tym;
 	struct passwd *pws;
@@ -41,6 +39,7 @@ void listing()
 	string filename;
 	dirent *pdir;
 	int size;
+	
 	dir=opendir(".");
 	
 	
@@ -48,9 +47,8 @@ void listing()
 	cout<<"Name"<<std::string( 26, ' ' )<<"Size"<<std::string( 15, ' ' )<<"Ownership"<<std::string( 18, ' ' )<<"Group"<<std::string( 18, ' ' )<<"User"<<std::string( 17, ' ' )<<"Last Modified"<<endl;
 	cout<<"\u001b[0m";
 	cout<<"\u001b[33m";
-	while(readdir(dir))
+	while((pdir=readdir(dir))!=NULL)
 	{	
-		pdir=readdir(dir);
 		filename=pdir->d_name;  
      		stat(pdir->d_name,&buf);
  
@@ -108,7 +106,7 @@ void listing()
 	}
 	 cout<<"\u001b[0m";
 	cout<<"";
-	cout.close();
+	
 	closedir(dir);
 }
 int main(int argc, char **argv)
