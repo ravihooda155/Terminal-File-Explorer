@@ -13,6 +13,7 @@
 #include<stdlib.h>
 using namespace std;
 //struct termios saved_attributes;
+vector<string>DirectryList;
 int getch(void)
 {
  int ch;
@@ -26,36 +27,39 @@ int getch(void)
  tcsetattr(STDIN_FILENO, TCSANOW, &oldt); 
  return ch; 
 }
-void listing()
+void addDirList(char dirname[])
 {
+	DIR *dir;
+	dirent *pdir;
 	
+	dir=opendir(dirname);
+	while((pdir=readdir(dir))!=NULL)
+	{	string filename((pdir->d_name));
+ 		DirectryList.push_back(filename);
+	}
+	closedir(dir);
+}
+void listing(string filename)
+{
+	// char*filename=filname.c_str();
 	struct stat buf;
 	struct tm *tym;
 	struct passwd *pws;
 	struct group *grp;
 	const char * months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-	DIR *dir;
 	int len;
-	string filename;
-	dirent *pdir;
 	int size;
 	
-	dir=opendir(".");
-	
-	
-	 cout<<"\u001b[31m";
-	cout<<"Name"<<std::string( 26, ' ' )<<"Size"<<std::string( 15, ' ' )<<"Ownership"<<std::string( 18, ' ' )<<"Group"<<std::string( 18, ' ' )<<"User"<<std::string( 17, ' ' )<<"Last Modified"<<endl;
-	cout<<"\u001b[0m";
 	cout<<"\u001b[33m";
-	while((pdir=readdir(dir))!=NULL)
-	{	
-		filename=pdir->d_name;  
-     		stat(pdir->d_name,&buf);
- 
-		len=filename.length();
+	//while(filename!=NULL)
+		
+		  
+     		stat(filename.c_str(),&buf);
+ 		
+		len=filename.size();
 
 		//file name
-		cout<<pdir->d_name;
+		cout<<filename;
 		cout << std::string( 30-len, ' ' );
 
 		//file size
@@ -103,22 +107,52 @@ void listing()
 		  cout<<tym->tm_mday<<" "<<months[(tym->tm_mon)-1]<<" "<<tym->tm_hour<<":"<<tym->tm_min;
 		
 		cout<<endl;
-	}
+	
 	 cout<<"\u001b[0m";
 	cout<<"";
 	
-	closedir(dir);
+}
+void display(int low,int high)
+{	
+	cout<<"\033c";//clear screen
+	 cout<<"\u001b[31m";
+	cout<<"Name"<<std::string( 26, ' ' )<<"Size"<<std::string( 15, ' ' )<<"Ownership"<<std::string( 18, ' ' )<<"Group"<<std::string( 18, ' ' )<<"User"<<std::string( 17, ' ' )<<"Last Modified"<<endl;
+	cout<<"\u001b[0m";
+	int i;
+	if(DirectryList.size()<34)
+	high=DirectryList.size();
+	for(i=low;i<high;i++)
+	{
+	listing(DirectryList[i]);
+	}
+	if(high<30)
+	cout<<"\u001b["<<high-low<<"A";
+	
 }
 int main(int argc, char **argv)
 {
 	int key1 = ' ';
 	 int key2 = ' ';
 	 int key3 = ' ';
-
-	string s;
+	int low,high;
+	char s[]={"."};
+	bool errFlag=false;//bug fixing
 	//cout << "\033[2J\033[1;1H";
+	cout<<"\u001b[2J";
+	if(argc<2)
+	{
+	addDirList(s);	
+	}
+	else
+	{addDirList(argv[1]);
+	}
+	//cout<<"\u001b[1A";
 	
-	listing();
+	low=0;high=34;
+	display(low,high);
+
+	cout<<"\u001b[34A";
+	int curr_ptr=0;
 	while(1)
 	{
 		key1 = getch();
@@ -129,20 +163,59 @@ int main(int argc, char **argv)
 		  key3= getch();
 		
 		 }
-
+		if(key1==10)
+		{cout<<"\033c";
+		if(curr_ptr>=0)
+		cout<<"File is"<<DirectryList[curr_ptr-1];
+		}
 		 if (key1== 27 && key2 == 91)
 		 {
 		  if(key3==65)
 		  {
+				
+				if(curr_ptr>0&&curr_ptr<=DirectryList.size())
+			{
+				if(curr_ptr<=34)
+				{curr_ptr--;cout<<"\u001b[1A";
+				
+				}
+				else
+				{curr_ptr--;
+				display(curr_ptr-34,curr_ptr);cout<<"\u001b[1A";
+				
+				}
 			
-			cout<<"\u001b[1A";
-			cout<<"\x1b[\x32 q";
+				
+			}
+			
+				
+				
 			
 		   }
 		    else if(key3==66)
+			{	
+			
+			if(curr_ptr<DirectryList.size()&&curr_ptr>=0)
 			{
-		     cout<<"\u001b[1B";
-			//cout<<"\e[?5l";	
+				
+				if(curr_ptr>=34)
+				{curr_ptr++;display(curr_ptr-34,curr_ptr);
+				cout<<"\u001b[1A";
+				errFlag=true;
+				}
+				else
+				{
+				curr_ptr++;
+				
+				cout<<"\u001b[1B";
+				}
+			
+				
+				
+			}
+			
+				
+			
 			}
 		  /* else if(key3==67)
 		     cout<<"\u001b[1C";
