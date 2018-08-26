@@ -1,37 +1,9 @@
+#include"DirListing.h"
 #include<iostream>
-#include<bits/stdc++.h>
-#include<dirent.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <pwd.h>
-#include <grp.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <termios.h>
-#include<string>
-#include<stdlib.h>
-#include <sys/types.h>
-#include <unistd.h> 
-#include <errno.h>  
-#include <sys/wait.h>
+
+
 using namespace std;
 
-
-int getch(void)
-{
- int ch;
- struct termios oldt;
- struct termios newt;
- tcgetattr(STDIN_FILENO, &oldt); 
- newt = oldt;  
- newt.c_lflag &= ~(ICANON | ECHO); 
- tcsetattr(STDIN_FILENO, TCSANOW, &newt);
- ch = getchar(); 
- tcsetattr(STDIN_FILENO, TCSANOW, &oldt); 
- return ch; 
-}
-//directory files loading in vector
 vector<string> addDirList(string dirname)
 {
 	DIR *dir;
@@ -53,7 +25,7 @@ void listing(string filename)
 	struct group *grp;
 	const char * months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 	int len;
-	int size;
+	
 	
 	cout<<"\u001b[33m";
 	
@@ -129,234 +101,15 @@ void display(int low,int high,vector<string>DirectryList)
 	cout<<"Name"<<std::string( 26, ' ' )<<"Size"<<std::string( 15, ' ' )<<"Ownership"<<std::string( 18, ' ' )<<"Group"<<std::string( 18, ' ' )<<"User"<<std::string( 17, ' ' )<<"Last Modified"<<endl;
 	cout<<"\u001b[0m";*/
 	int i;
-	
-	if(DirectryList.size()<24)
+	if(DirectryList.size()<25)
 	high=DirectryList.size();
-	if(high<=DirectryList.size()&& low>=0)
+	
+	for(i=low;i<high;i++)
 	{
-		for(i=low;i<high;i++)
-		{
-		listing(DirectryList[i]);
-		
-		}
+	listing(DirectryList[i]);
+	
 	}
-	//if(high<22)
-	//cout<<"\u001b["<<high-low+2<<"A";
+	if(high<22)
+	cout<<"\u001b["<<high-low+2<<"A";
 	
-}
-string home_path="";
-stack<string>backward_history;
-stack<string>forward_history;
-int main(int argc, char **argv)
-{
-	vector<string>DirectryList;
-	//string current_path=argv[1];
-	int key1 = ' ';
-	 int key2 = ' ';
-	 int key3 = ' ';
-	int low,high;
-	
-	//bool errFlag=false;//bug fixing
-	//cout << "\033[2J\033[1;1H";
-	pid_t  pid;
-	cout<<"\u001b[2J";
-	if(argc<2)
-	{string s=".";
-	DirectryList=addDirList(s);	
-	}
-	else
-	{string s=argv[1];
-		DirectryList=addDirList(s);
-	}
-	//cout<<"\u001b[1A";
-	
-	low=0;high=25;
-	display(low,high,DirectryList);
-	cout<<"\033[3;1H";
-	//cout<<"\u001b[25A";
-	//home directory 
-	char buffer[256];
-	string path = getcwd(buffer, 256);
-	home_path=path;
-	int curr_ptr=0;
-	while(1)
-	{
-		key1 = getch();
-		
-		 if (key1 == 27)
-		 {
-		  key2 = getch();
-		  key3= getch();
-		
-		 }
-		 ///////////home key///////////
-		  if(key1==104)
-		     {
-				
-						 DirectryList.clear();
-						DirectryList=addDirList(home_path);
-						int c=chdir(home_path.c_str());
-						curr_ptr=0;
-						low=0;high=25;
-						display(low,high,DirectryList);
-					//	cout<<"\u001b[25A";
-						cout<<"\033[3;1H";	
-						 backward_history.pop();
-					
-			 }
-			 ////////backspace key/////////
-			 if(key1==127)
-			 {
-				 		//cout<<"\033c";
-						 	DirectryList.clear();
-							DirectryList=addDirList("..");
-							int c=chdir("..");
-							curr_ptr=0;
-							low=0;high=25;
-							display(low,high,DirectryList);
-						//	cout<<"\u001b[25A";
-							cout<<"\033[3;1H";
-						
-			 }
-			 ///////////enter key//////////////////////
-			if(key1==10)
-			{			DirectryList.clear();
-						//cout<<"\033c";
-						//current directory read
-						char buffer[256];
-						string path = getcwd(buffer, 256);
-						backward_history.push(path);
-						string CurrentPath;
-						CurrentPath = path+"/"+DirectryList[curr_ptr];
-						int c=chdir(CurrentPath.c_str());
-
-						//for checking directory
-						struct stat buf;
-						string filename=CurrentPath;
-						stat(filename.c_str(),&buf);
-						//cout << CurrentPath << endl;
-						if(S_ISDIR(buf.st_mode))
-						{
-							DirectryList=addDirList(CurrentPath);
-								curr_ptr=0;
-							low=0;high=25;
-							display(low,high,DirectryList);
-
-							//cout<<"\u001b[25A";
-						
-							//cout << CurrentPath << endl;
-								cout<<"\033[3;1H";	
-						}
-						else
-						{
-							
-							if (fork() == 0) {
-							execl("/usr/bin/xdg-open", "xdg-open", (DirectryList[curr_ptr]).c_str(), (char *)0);
-								
-														exit(1);
-							}
-						}
-			}
-		//////key movement up down left right/////////////
-			if (key1== 27 && key2 == 91)
-			{///up key/////
-			if(key3==65)
-			{
-					
-					if(curr_ptr>0&&curr_ptr<=DirectryList.size())
-				{
-					if(curr_ptr<=25)
-					{curr_ptr--;cout<<"\u001b[1A";
-					
-					}
-					else
-					{curr_ptr--;
-					display(curr_ptr-25,curr_ptr,DirectryList);cout<<"\u001b[1A";
-					
-					}
-				
-					
-				}		
-				
-			}
-			//////down key/////
-				else if(key3==66)
-				{	
-				
-				if(curr_ptr<DirectryList.size()&&curr_ptr>=0)
-				{
-					
-					if(curr_ptr>=25)
-					{curr_ptr++;display(curr_ptr-25,curr_ptr,DirectryList);
-					cout<<"\u001b[1A";
-					//errFlag=true;
-					}
-					else
-					{
-					curr_ptr++;
-					
-					cout<<"\u001b[1B";
-					}
-				
-					
-					
-				}
-				
-					
-				
-				}
-				//////left key//////
-			else if(key3==68)
-				{
-					// cout<<"hello"<<backward_history.size();
-					if(!backward_history.empty())
-					{
-						// if(backward_history.top()!=home_path)
-						{
-							DirectryList.clear();
-							DirectryList=addDirList(backward_history.top());
-								int c=chdir((backward_history.top()).c_str());
-								curr_ptr=0;
-							low=0;high=25;
-							display(low,high,DirectryList);
-						//	cout<<"\u001b[25A";
-							cout<<"\033[3;1H";
-							forward_history.push(backward_history.top());	
-							backward_history.pop();
-						}
-						
-						
-					}
-				}
-			///////right key///////
-			else if(key3==67)
-				{
-					if(!forward_history.empty())
-					{
-						// if(backward_history.top()!=home_path)
-						{
-							DirectryList.clear();
-							DirectryList=addDirList(forward_history.top());
-								int c=chdir((forward_history.top()).c_str());
-								curr_ptr=0;
-							low=0;high=25;
-							display(low,high,DirectryList);
-						//	cout<<"\u001b[25A";
-							cout<<"\033[3;1H";
-							backward_history.push(forward_history.top());	
-							forward_history.pop();
-						}
-						
-						
-					}
-				}			
-			
-			
-			}
-			
-		 
-	}
-	
-	
-return 0;
 }
