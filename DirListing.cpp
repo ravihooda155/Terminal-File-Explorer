@@ -25,7 +25,7 @@ void listing(string filename)
 	struct group *grp;
 	const char * months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 	int len;
-	
+	int size;
 	
 	cout<<"\u001b[33m";
 	

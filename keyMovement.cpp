@@ -5,11 +5,11 @@
 #include<string>
 
 using namespace std;
-string home_path=".";
+string home_path;
 stack<string>backward_history;
 stack<string>forward_history;
 
-void disHomeKey(string  path,vector<string>&DirectryList)
+void disHomeKey(string path,vector<string>&DirectryList)
 {
 	int low,high;
 	if(path!=home_path)
@@ -19,8 +19,7 @@ void disHomeKey(string  path,vector<string>&DirectryList)
 	//vector<string>DirectryList;
 	DirectryList=addDirList(home_path);
 	int c=chdir(home_path.c_str());
-	if(c<0)
-    cout<<"Error";					
+						
 	low=0;high=25;
 	display(low,high,DirectryList);
 					//	cout<<"\u001b[25A";
@@ -35,14 +34,13 @@ void disBackspaceKey(vector<string>&DirectryList)
 	//vector<string>DirectryList;
 	DirectryList=addDirList("..");
 	int c=chdir("..");
-	if(c<0)
-    cout<<"Error";						//curr_ptr=0;
+							//curr_ptr=0;
 	low=0;high=25;
 	display(low,high,DirectryList);
 						//	cout<<"\u001b[25A";
 	cout<<"\033[3;1H";
 }
-int disUpKey(unsigned int curr_ptr,vector<string>&DirectryList)
+int disUpKey(int curr_ptr,vector<string>&DirectryList)
 {
 	
 					if(curr_ptr>0&&curr_ptr<=DirectryList.size())
@@ -62,7 +60,7 @@ int disUpKey(unsigned int curr_ptr,vector<string>&DirectryList)
 			
 				return curr_ptr;
 }
-int disDownKey(unsigned int curr_ptr,vector<string>&DirectryList)
+int disDownKey(int curr_ptr,vector<string>&DirectryList)
 {
 		if(curr_ptr<DirectryList.size()&&curr_ptr>=0)
 				{
@@ -86,7 +84,7 @@ int disDownKey(unsigned int curr_ptr,vector<string>&DirectryList)
 				return curr_ptr;
 				
 }
-int disLeftKey(unsigned int curr_ptr,vector<string>&DirectryList)
+int disLeftKey(int curr_ptr,vector<string>&DirectryList)
 {
 	int low,high;
 		if(!backward_history.empty())
@@ -96,8 +94,6 @@ int disLeftKey(unsigned int curr_ptr,vector<string>&DirectryList)
 							DirectryList.clear();
 							DirectryList=addDirList(backward_history.top());
 								int c=chdir((backward_history.top()).c_str());
-								if(c<0)
-    							cout<<"Error";
 								curr_ptr=0;
 							low=0;high=25;
 							display(low,high,DirectryList);
@@ -112,7 +108,7 @@ int disLeftKey(unsigned int curr_ptr,vector<string>&DirectryList)
 				
 					return curr_ptr;
 }
-int disRightKey(unsigned int curr_ptr,vector<string>&DirectryList)
+int disRightKey(int curr_ptr,vector<string>&DirectryList)
 {
 	int low,high;
 	if(!forward_history.empty())
@@ -122,8 +118,6 @@ int disRightKey(unsigned int curr_ptr,vector<string>&DirectryList)
 							DirectryList.clear();
 							DirectryList=addDirList(forward_history.top());
 								int c=chdir((forward_history.top()).c_str());
-								if(c<0)
-    							cout<<"Error";
 								curr_ptr=0;
 							low=0;high=25;
 							display(low,high,DirectryList);
@@ -138,7 +132,7 @@ int disRightKey(unsigned int curr_ptr,vector<string>&DirectryList)
 					return curr_ptr;
 }
 
-int disEnterKey(unsigned int curr_ptr,vector<string>&DirectryList)
+int disEnterKey(int curr_ptr,vector<string>&DirectryList)
 {
 						
 						int low,high;
@@ -150,8 +144,7 @@ int disEnterKey(unsigned int curr_ptr,vector<string>&DirectryList)
 						string CurrentPath;
 						CurrentPath = path+"/"+DirectryList[curr_ptr];
 						int c=chdir(CurrentPath.c_str());
-						if(c<0)
-    					cout<<"Error";
+						
 						//for checking directory
 						struct stat buf;
 						string filename=CurrentPath;

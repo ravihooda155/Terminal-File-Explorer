@@ -19,12 +19,12 @@
 #ifndef INC_keyMovement_H
 #define INC_keyMovement_H
 using namespace std;
-int disUpKey(unsigned int,std::vector<std::string>&);
-int disDownKey(unsigned int,std::vector<std::string>&);
-int disLeftKey(unsigned int,std::vector<std::string>&);
-int disRightKey(unsigned int,std::vector<std::string>&);
-void disHomeKey(std::string,std::vector<std::string>&);
+int disUpKey(int,std::vector<std::string>&);
+int disDownKey(int,std::vector<std::string>&);
+int disLeftKey(int,std::vector<std::string>&);
+int disRightKey(int,std::vector<std::string>&);
+void disHomeKey(string,std::vector<std::string>&);
 void disBackspaceKey(std::vector<std::string>&);
-int disEnterKey(unsigned int,std::vector<std::string>&);
+int disEnterKey(int,std::vector<std::string>&);
 #endif  
 
