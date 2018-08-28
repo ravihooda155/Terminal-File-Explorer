@@ -5,7 +5,7 @@
 #include<string>
 
 using namespace std;
-string home_path;
+string home_path="";
 stack<string>backward_history;
 stack<string>forward_history;
 
@@ -19,13 +19,13 @@ void disHomeKey(string path,vector<string>&DirectryList)
 	//vector<string>DirectryList;
 	DirectryList=addDirList(home_path);
 	int c=chdir(home_path.c_str());
-	if(c<0)
-	cout<<"error changing directory";					
+	//if(c<0)
+	//cout<<"error changing directory";					
 	low=0;high=25;
 	display(low,high,DirectryList);
 					//	cout<<"\u001b[25A";
 	cout<<"\033[3;1H";	
-	backward_history.pop();	
+	//backward_history.pop();	
 	}					
 }
 void disBackspaceKey(vector<string>&DirectryList)
@@ -36,8 +36,8 @@ void disBackspaceKey(vector<string>&DirectryList)
 	DirectryList=addDirList("..");
 	int c=chdir("..");
 							//curr_ptr=0;
-							if(c<0)
-							cout<<"error changing directory";
+						//	if(c<0)
+						//	cout<<"error changing directory";
 	low=0;high=25;
 	display(low,high,DirectryList);
 						//	cout<<"\u001b[25A";
@@ -97,8 +97,8 @@ int disLeftKey(int curr_ptr,vector<string>&DirectryList)
 							DirectryList.clear();
 							DirectryList=addDirList(backward_history.top());
 								int c=chdir((backward_history.top()).c_str());
-								if(c<0)
-								cout<<"error changing directory";
+								//if(c<0)
+								//cout<<"error changing directory";
 								curr_ptr=0;
 							low=0;high=25;
 							display(low,high,DirectryList);
@@ -123,8 +123,8 @@ int disRightKey(int curr_ptr,vector<string>&DirectryList)
 							DirectryList.clear();
 							DirectryList=addDirList(forward_history.top());
 								int c=chdir((forward_history.top()).c_str());
-								if(c<0)
-								cout<<"error changing directory";
+								//if(c<0)
+								//cout<<"error changing directory";
 								curr_ptr=0;
 							low=0;high=25;
 							display(low,high,DirectryList);
@@ -151,8 +151,8 @@ int disEnterKey(int curr_ptr,vector<string>&DirectryList)
 						string CurrentPath;
 						CurrentPath = path+"/"+DirectryList[curr_ptr];
 						int c=chdir(CurrentPath.c_str());
-						if(c<0)
-						cout<<"error changing diectory";
+						//if(c<0)
+						//cout<<"error changing diectory";
 						//for checking directory
 						struct stat buf;
 						string filename=CurrentPath;
@@ -171,13 +171,13 @@ int disEnterKey(int curr_ptr,vector<string>&DirectryList)
 								cout<<"\033[3;1H";	
 						}
 						else
-						{
-							
+						{	
 							if (fork() == 0) {
 							execl("/usr/bin/xdg-open", "xdg-open", (DirectryList[curr_ptr]).c_str(), (char *)0);
 								
 														exit(1);
 							}
+							
 						}
 						return curr_ptr;
 }

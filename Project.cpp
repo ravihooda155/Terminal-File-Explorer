@@ -194,13 +194,21 @@ int main(int argc, char **argv)
 			{		string mesg;
 					string str=string(commandBuffer.begin(),commandBuffer.end());
 					vector<string> tokens;
+					tokens.clear();
 					stringstream check1(str);
-					string intermediate;
-					while(getline(check1, intermediate, ' '))
+					string rawcode;
+					while(getline(check1, rawcode, ' '))
 					{
-						tokens.push_back(intermediate);
-					}				
-					if(str.length()>2)
+						tokens.push_back(rawcode);
+					}	
+					//cout<<str.length();
+					if(tokens.size()==1)
+					{
+					mesg="command not found";
+					setCommandModeStatus(commandBuffer,mesg);
+					
+					}			
+					else if(tokens.size()>2)
 					{			
 								//////copy file////////////
 								if(tokens[0]=="copy_file")
@@ -214,11 +222,10 @@ int main(int argc, char **argv)
 									{
 										string compSrc=basePath+"/"+tokens[i];
 										string compDest=dest+"/"+tokens[i];
-										cout<<compSrc<<compDest;
-										copyFiles(compSrc,compDest);
+										mesg=copyFiles(compSrc,compDest);
 									
 									}
-									mesg="File Successfully Copied";
+								//	mesg="File Successfully Copied";
 									setCommandModeStatus(commandBuffer,mesg);
 								}
 								///////////move file////////////
@@ -263,8 +270,8 @@ int main(int argc, char **argv)
 										else{
 												compSrc=tokens[2]+"/"+tokens[1];
 										}	
-											createdirectory(compSrc);
-											mesg="Directory Created Successfully";
+											mesg=createdirectory(compSrc);
+											//mesg="Directory Created Successfully";
 											setCommandModeStatus(commandBuffer,mesg);
 								}
 								///////////rename file////////////////
@@ -281,7 +288,7 @@ int main(int argc, char **argv)
 									string compDest=basePath+"/"+dest;
 									
 									renameFiles(compSrc,compDest);
-									 compSrc=basePath+"/"+src;
+									mesg= compSrc=basePath+"/"+src;
 									if( remove(compSrc.c_str()) != 0 )
 										mesg= "Error deleting file";
 									else
@@ -290,9 +297,35 @@ int main(int argc, char **argv)
 									
 									setCommandModeStatus(commandBuffer,mesg);
 								}
+									/////////create file////////////
+								else if(tokens[0]=="create_file")
+								{
+								
+									char buffer[256];
+									string basePath = getcwd(buffer, 256);
+									
+									string compSrc;
+									string dest=tokens[2];
+									if(dest==".")
+									{
+										compSrc=basePath+"/"+tokens[1];
+									}
+									else{
+										compSrc=tokens[2]+"/"+tokens[1];
+								}
+									mesg=	createfile(compSrc);
+									//	mesg="File Created Successfully";
+										setCommandModeStatus(commandBuffer,mesg);
+								}
+								else 
+								{
+									mesg="command not found";
+									setCommandModeStatus(commandBuffer,mesg);
+					
+								}
 				
 					}
-					else if(str.length()==2)
+					else if(tokens.size()==2)
 					{
 						    string basePath; 
 							/////////////delete file ////////////
@@ -305,8 +338,8 @@ int main(int argc, char **argv)
                             	string compSrc;
 							 	dest=tokens[1];
                                 compSrc=basePath+"/"+dest;
-                                deletefile(compSrc);
-								mesg="File Deleted Successfully";
+                                mesg=deletefile(compSrc);
+								//mesg="File Deleted Successfully";
 								setCommandModeStatus(commandBuffer,mesg);
 							}
 							///////////delete dir///////////
@@ -319,40 +352,70 @@ int main(int argc, char **argv)
                                 string compSrc;
 							    string dest=tokens[1];
                                 compSrc=basePath+"/"+dest;
-                                delete_dir(compSrc);
-								mesg="Directory Deleted Successfully";
+                               mesg= delete_dir(compSrc);
+								//mesg="Directory Deleted Successfully";
 								setCommandModeStatus(commandBuffer,mesg);
 							}	
-							/////////create file////////////
-							else if(tokens[0]=="create_file")
+							///////////////goto//////////////////////
+						else if(tokens[0]=="goto")
 							{
 							
+							    char buffer[256];
+							    basePath = getcwd(buffer, 256);
+							
+                                string compSrc;
+							    string dest=tokens[1];
+                                compSrc=home_path+"/"+dest;
+                                terminalMode="NORMAL";
+								mesg="Directory Goto Successfully";
+								setCommandModeStatus(commandBuffer,mesg);
+								cout<<compSrc;
+								//chdir("..");
+								chdir(compSrc.c_str());
+								DirectryList.clear();
+								DirectryList=addDirList(compSrc);
+								low=0;high=25;
+								display(low,high,DirectryList);
+								cout<<"\033[3;1H";
+								break;
+							}	
+							////////////searching file/////////////////
+							else if(tokens[0]=="search")
+							{
+							    string inputFil=tokens[1];
+								vector<string>searchResult;
 								char buffer[256];
 								basePath = getcwd(buffer, 256);
 								
-								string compSrc;
-								string dest=tokens[2];
-								if(dest==".")
+								string path=basePath;
+								searchResult=searchFile(home_path,searchResult,inputFil);
+								if(searchResult.size()==0)
 								{
-									compSrc=basePath+"/"+tokens[1];
+									mesg="File not Found";
 								}
-							    else{
-									compSrc=tokens[2]+"/"+tokens[1];
-							   }
-									createfile(compSrc);
-									mesg="File Created Successfully";
-									setCommandModeStatus(commandBuffer,mesg);
+								else
+								{
+									//cout<<searchResult.size();
+									for (int i=0;i<searchResult.size();i++)
+									{
+										mesg+=searchResult[i]+" "+"Found";
+									}
+									terminalMode="NORMAL";
+									
+									
+								} 
+							chdir(basePath.c_str());
+								setCommandModeStatus(commandBuffer,mesg);
 							}
-                    
-					}
-					else 
-					{
+							else 
+							{
+								mesg="command not found";
+								setCommandModeStatus(commandBuffer,mesg);
 					
-				
-					mesg="Enter correct command";
-					setCommandModeStatus(commandBuffer,mesg);
-					}
+							}
 
+					}
+				
 
 			}
 		

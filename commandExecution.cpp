@@ -5,26 +5,24 @@
 
 using namespace std;
 
-void copyFiles(string src,string dest)
+string copyFiles(string src,string dest)
 {
 								ifstream fs;
 								ofstream ft;
 								char ch;
-								
+								string mesg;
 								fs.open(src);
 								if(!fs)
 								{
-									cout<<"Error in opening source file..!!";
-									getchar();
+									mesg="Error in opening source file..!!";
 									exit(1);
 								}
 								
 								ft.open(dest);
 								if(!ft)
 								{
-									cout<<"Error in opening target file..!!";
+									mesg="Error in opening target file..!!";
 									fs.close();
-									getchar();
 									exit(2);
 								}
 								while(fs.eof()==0)
@@ -35,27 +33,28 @@ void copyFiles(string src,string dest)
 							
 								fs.close();
 								ft.close();
+								return mesg;
 }
-void moveFiles(string src,string dest)
+string moveFiles(string src,string dest)
 {
 								ifstream fs;
 								ofstream ft;
 								char ch;
-								
+								string mesg;
 								fs.open(src);
 								if(!fs)
 								{
-									cout<<"Error in opening source file..!!";
-									getchar();
+									mesg="Error in opening source file..!!";
+								
 									exit(1);
 								}
 								
 								ft.open(dest);
 								if(!ft)
 								{
-									cout<<"Error in opening target file..!!";
+									mesg="Error in opening target file..!!";
 									fs.close();
-									getchar();
+								
 									exit(2);
 								}
 								while(fs.eof()==0)
@@ -66,35 +65,37 @@ void moveFiles(string src,string dest)
 							
 								fs.close();
 								ft.close();
+								return mesg;
 }
-void createdirectory(string src)
+string createdirectory(string src)
 {
-								
+								string mesg;
 							if (mkdir(src.c_str(),0777) != 0)
                             {
-                                cout<<"directory not created successfully";
+                                mesg="directory not created successfully";
                             }
+							return mesg;
 }
-void renameFiles(string src,string dest)
+string renameFiles(string src,string dest)
 {
 								ifstream fsin;
 								ofstream ftop;
 								char ch;
-								
+								string mesg;
 								fsin.open(src);
 								if(!fsin)
 								{
-									cout<<"Error in opening source file..!!";
-									getchar();
+									mesg="Error in opening source file..!!";
+									
 									exit(1);
 								}
 								
 								ftop.open(dest);
 								if(!ftop)
 								{
-									cout<<"Error in opening target file..!!";
+									mesg="Error in opening target file..!!";
 									fsin.close();
-									getchar();
+									
 									exit(2);
 								}
 								while(fsin.eof()==0)
@@ -105,40 +106,43 @@ void renameFiles(string src,string dest)
 							
 								fsin.close();
 								ftop.close();
+								return mesg;
 }
-void deletefile(string src)
-{                               
+string deletefile(string src)
+{                              string mesg; 
                                  if( remove(src.c_str()) != 0 )
-                                    perror( "Error deleting file" );
+                                    mesg="Error deleting file" ;
                                 else
-                                    puts( "File successfully deleted" );
+                                    mesg= "File successfully deleted" ;
+									return mesg;
                                 
                             
 }
-void delete_dir(string src)
-{                               
+string delete_dir(string src)
+{                               string mesg;
                                  if (rmdir(src.c_str()) != 0)
-                                    perror( "Error deleting folder" );
+                                    mesg= "Error deleting folder";
                                 else
-                                    puts( "Folder successfully deleted" );
-                                
+                                    mesg= "Folder successfully deleted" ;
+                                return mesg;
                             
 }
-void createfile(string src)
+string createfile(string src)
 {
 								
 								ofstream ftsrc;
 								char ch;
-								
+								string mesg;
 								
 								ftsrc.open(src);
 								if(!ftsrc)
 								{
-									cout<<"Error in creating  file..!";
-									getchar();
+									mesg="Error in creating  file..!";
+								
 									exit(2);
 								}
 								ftsrc.close();
+								return mesg;
 }
 void setCommandModeStatus(vector<char>&commandBuffer,string mesg)
 {
@@ -157,4 +161,37 @@ void setCommandModeStatus(vector<char>&commandBuffer,string mesg)
 				
 			    cout<<"\033["<<w.ws_row<<";"<<15+mesg.length()<<"H";
 				commandBuffer.clear();
+}
+vector<string> searchFile(string dir,vector<string>&search1,string file)
+{
+	DIR *dp;
+	struct dirent *entry;
+	struct stat statbuf;
+	char buffer[256];
+	string  basePath = getcwd(buffer, 256);
+	if((dp = opendir(dir.c_str())) == NULL) 
+	{
+	//return search1;
+	}
+	chdir(dir.c_str());
+	while((entry = readdir(dp)) != NULL) 
+	{
+		lstat(entry->d_name,&statbuf);
+		if(S_ISDIR(statbuf.st_mode)) 
+		{
+		if(strcmp(".",entry->d_name) == 0 ||
+		strcmp("..",entry->d_name) == 0)
+		continue;
+		search1=searchFile(dir+"/"+string((entry->d_name)),search1,file);
+	    }
+	    else 
+		{
+			if(string(entry->d_name)==file)
+			search1.push_back(dir+"/"+string(entry->d_name));
+		
+		}
+	}
+	chdir(basePath.c_str());
+	closedir(dp);
+	return search1;
 }

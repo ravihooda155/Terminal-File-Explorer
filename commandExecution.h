@@ -20,13 +20,14 @@
 #ifndef INC_commandExecution_H
 #define INC_commandExecution_H
 using namespace std;
-void copyFiles(string,string);
-void moveFiles(string,string);
-void createdirectory(string);
-void renameFiles(string ,string);
-void deletefile(string);
-void delete_dir(string);
-void createfile(string);
-void setCommandModeStatus(vector<char>&,string);
+string copyFiles(string,string);
+string moveFiles(string,string);
+string createdirectory(string);
+string renameFiles(string ,string);
+string deletefile(string);
+string delete_dir(string);
+string createfile(string);
+void setCommandModeStatus(std::vector<char>&,std::string);
+std::vector<std::string> searchFile(std::string,std::vector<std::string>&,string);
 #endif  
 
