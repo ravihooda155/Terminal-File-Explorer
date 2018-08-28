@@ -19,7 +19,8 @@ void disHomeKey(string path,vector<string>&DirectryList)
 	//vector<string>DirectryList;
 	DirectryList=addDirList(home_path);
 	int c=chdir(home_path.c_str());
-						
+	if(c<0)
+	cout<<"error changing directory";					
 	low=0;high=25;
 	display(low,high,DirectryList);
 					//	cout<<"\u001b[25A";
@@ -35,6 +36,8 @@ void disBackspaceKey(vector<string>&DirectryList)
 	DirectryList=addDirList("..");
 	int c=chdir("..");
 							//curr_ptr=0;
+							if(c<0)
+							cout<<"error changing directory";
 	low=0;high=25;
 	display(low,high,DirectryList);
 						//	cout<<"\u001b[25A";
@@ -94,6 +97,8 @@ int disLeftKey(int curr_ptr,vector<string>&DirectryList)
 							DirectryList.clear();
 							DirectryList=addDirList(backward_history.top());
 								int c=chdir((backward_history.top()).c_str());
+								if(c<0)
+								cout<<"error changing directory";
 								curr_ptr=0;
 							low=0;high=25;
 							display(low,high,DirectryList);
@@ -118,6 +123,8 @@ int disRightKey(int curr_ptr,vector<string>&DirectryList)
 							DirectryList.clear();
 							DirectryList=addDirList(forward_history.top());
 								int c=chdir((forward_history.top()).c_str());
+								if(c<0)
+								cout<<"error changing directory";
 								curr_ptr=0;
 							low=0;high=25;
 							display(low,high,DirectryList);
@@ -144,7 +151,8 @@ int disEnterKey(int curr_ptr,vector<string>&DirectryList)
 						string CurrentPath;
 						CurrentPath = path+"/"+DirectryList[curr_ptr];
 						int c=chdir(CurrentPath.c_str());
-						
+						if(c<0)
+						cout<<"error changing diectory";
 						//for checking directory
 						struct stat buf;
 						string filename=CurrentPath;

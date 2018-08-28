@@ -37,39 +37,7 @@ int getch(void)
  return ch; 
 }
 //	string home_path="";
-/*void copyFiles(string src,string dest)
-{
-								ifstream fs;
-								ofstream ft;
-								char ch;
-								
-								fs.open(src.c_str());
-								if(!fs)
-								{
-									cout<<"Error in opening source file..!!";
-									getch();
-									exit(1);
-								}
-								
-								ft.open(dest.c_str());
-								if(!ft)
-								{
-									cout<<"Error in opening target file..!!";
-									fs.close();
-									getch();
-									exit(2);
-								}
-								while(fs.eof()==0)
-								{
-									fs>>ch;
-									ft<<ch;
-								}
-							
-								fs.close();
-								ft.close();
 
-}
-*/
 string terminalMode="NORMAL";
 int main(int argc, char **argv)
 {
@@ -79,8 +47,8 @@ int main(int argc, char **argv)
 	int key2 = ' ';
 	int key3 = ' ';
 	char keyy=' ';
-	char commandBuffer[256];
-	int command_length=0;
+	vector<char>commandBuffer;
+	//int command_length=0;
 	int low,high;
 	
 	//bool errFlag=false;//bug fixing
@@ -129,11 +97,12 @@ int main(int argc, char **argv)
 				//cout<<"\u001b[J";
 				cout<<"\u001b["<<w.ws_row-3<<"B";
 				//cout<<"\033["<<50<<"B";
-				command_length=0;
+				commandBuffer.clear();
 				terminalMode="COMMAND";
 				cout<<"\u001b[33m";
 				cout<<"Enter Command:";
 				cout<<"\u001b[0m";
+				
 		}
 		/////////for up down left right navigation/////////////
 		 if (key1 == 27)
@@ -194,11 +163,10 @@ int main(int argc, char **argv)
 		
 		while(keyy=getch())
 		{
-			if(keyy!=10 && keyy!=27)
+			if(keyy!=10 && keyy!=27 && keyy!=127)
 			{
 				cout<<keyy;
-				commandBuffer[command_length]=keyy;
-				command_length++;
+				commandBuffer.push_back(keyy);
 			}
 			////////escape Key//////////////
 			else if(keyy==27)
@@ -207,17 +175,24 @@ int main(int argc, char **argv)
 
 				struct winsize w;
 				ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-				cout<<"\u001b["<<1<<"A";
-				cout<<"\033["<<w.ws_row-4<<";1H";
+				//cout<<"\u001b["<<1<<"A";
+				//cout<<"\033["<<w.ws_row-10<<";1H";
 				cout<<"\u001b["<<1<<"K";
-				cout<<"\u001b["<<w.ws_row-7<<"A";
+				cout<<"\033["<<3<<";1H";
 				break;
 				 
 			}
+			/////////////backspace key/////////////
+			else if(keyy==127)
+			{
+				string mesg="";
+
+				setCommandModeStatus(commandBuffer,mesg);
+			}
 			//////////////enter key////////////////
 			else if(keyy==10)
-			{
-					string str=string(commandBuffer);
+			{		string mesg;
+					string str=string(commandBuffer.begin(),commandBuffer.end());
 					vector<string> tokens;
 					stringstream check1(str);
 					string intermediate;
@@ -243,36 +218,140 @@ int main(int argc, char **argv)
 										copyFiles(compSrc,compDest);
 									
 									}
+									mesg="File Successfully Copied";
+									setCommandModeStatus(commandBuffer,mesg);
 								}
+								///////////move file////////////
 								else if(tokens[0]=="move_file")
 									{
-											
+											string compSrc;
 											char buffer[256];
 											string basePath = getcwd(buffer, 256);
 											string dest=tokens[tokens.size()-1];
-											for(int i=1;i<tokens.size()-1;i++)
+											for(unsigned int i=1;i<tokens.size()-1;i++)
 											{
-												string compSrc=basePath+"/"+tokens[i];
+												 compSrc=basePath+"/"+tokens[i];
 												string compDest=dest+"/"+tokens[i];
 												moveFiles(compSrc,compDest);
 											
 											}
-											for(int i=1;i<tokens.size()-1;i++)
+											for(unsigned int i=1;i<tokens.size()-1;i++)
 											{
-												string compSrc=basePath+"/"+tokens[i];
+												 compSrc=basePath+"/"+tokens[i];
 												if( remove(compSrc.c_str()) != 0 )
-													perror( "Error deleting file" );
+													mesg="Error deleting file" ;
 												else
-													puts( "File successfully moved" );
-												return 0;
+													mesg="File successfully moved";
+												
 											}
+											
+											setCommandModeStatus(commandBuffer,mesg);
 									}
-                	
-	
+									/////////create directory//////////////
+								else if(tokens[0]=="create_dir")
+								{
+										
+										char buffer[256];
+										string basePath = getcwd(buffer, 256);
+										
+										string compSrc;
+										string dest=tokens[2];
+										if(dest==".")
+										{
+											compSrc=basePath+"/"+tokens[1];
+										}
+										else{
+												compSrc=tokens[2]+"/"+tokens[1];
+										}	
+											createdirectory(compSrc);
+											mesg="Directory Created Successfully";
+											setCommandModeStatus(commandBuffer,mesg);
+								}
+								///////////rename file////////////////
+								else   if(tokens[0]=="rename")
+								{
+								
+									char buffer[256];
+									string basePath = getcwd(buffer, 256);
+									string src,dest;
+									src=tokens[1];
+									dest=tokens[2];
+								
+									string compSrc=basePath+"/"+src;
+									string compDest=basePath+"/"+dest;
+									
+									renameFiles(compSrc,compDest);
+									 compSrc=basePath+"/"+src;
+									if( remove(compSrc.c_str()) != 0 )
+										mesg= "Error deleting file";
+									else
+										mesg="File successfully renamed";
+									
+									
+									setCommandModeStatus(commandBuffer,mesg);
+								}
 				
 					}
-
-
+					else if(str.length()==2)
+					{
+						    string basePath; 
+							/////////////delete file ////////////
+							if(tokens[0]=="delete_file")
+							{
+							
+								char buffer[256];
+								basePath = getcwd(buffer, 256);
+								string dest;
+                            	string compSrc;
+							 	dest=tokens[1];
+                                compSrc=basePath+"/"+dest;
+                                deletefile(compSrc);
+								mesg="File Deleted Successfully";
+								setCommandModeStatus(commandBuffer,mesg);
+							}
+							///////////delete dir///////////
+							else if(tokens[0]=="delete_dir")
+							{
+							
+							    char buffer[256];
+							    basePath = getcwd(buffer, 256);
+							
+                                string compSrc;
+							    string dest=tokens[1];
+                                compSrc=basePath+"/"+dest;
+                                delete_dir(compSrc);
+								mesg="Directory Deleted Successfully";
+								setCommandModeStatus(commandBuffer,mesg);
+							}	
+							/////////create file////////////
+							else if(tokens[0]=="create_file")
+							{
+							
+								char buffer[256];
+								basePath = getcwd(buffer, 256);
+								
+								string compSrc;
+								string dest=tokens[2];
+								if(dest==".")
+								{
+									compSrc=basePath+"/"+tokens[1];
+								}
+							    else{
+									compSrc=tokens[2]+"/"+tokens[1];
+							   }
+									createfile(compSrc);
+									mesg="File Created Successfully";
+									setCommandModeStatus(commandBuffer,mesg);
+							}
+                    
+					}
+					else 
+					{
+					
+				
+					mesg="Enter correct command";
+					setCommandModeStatus(commandBuffer,mesg);
+					}
 
 
 			}
