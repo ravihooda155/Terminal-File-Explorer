@@ -294,6 +294,24 @@ int main(int argc, char **argv)
 											//mesg="Directory Created Successfully";
 											setCommandModeStatus(commandBuffer,mesg);
 								}
+								/////////copy directory recursively//////////////
+								else if(tokens[0]=="copy_dir")
+								{
+										
+										char buffer[256];
+										string basePath = getcwd(buffer, 256);
+										
+										string compSrc,compDest;
+										string dest=tokens[2];
+									
+											compSrc=basePath+"/"+tokens[1];
+										
+										   compDest=basePath+"/"+dest;
+										    mesg=createdirectory(compDest);
+											rec_dir_copy(compSrc,compDest);
+											mesg="Directory copied Successfully";
+											setCommandModeStatus(commandBuffer,mesg);
+								}
 								///////////rename file////////////////
 								else   if(tokens[0]=="rename")
 								{

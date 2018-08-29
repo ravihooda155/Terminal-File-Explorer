@@ -238,4 +238,35 @@ void snap_shot(string dir,ofstream &of)
                
         closedir(dp);
 }
+void rec_dir_copy(string dir,string dest)
+{
+	DIR *dp;
+	struct dirent *entry;
+	struct stat statbuf;
+	char buffer[256];
+	string  basePath = getcwd(buffer, 256);
+	if((dp = opendir(dir.c_str())) == NULL) 
+	{
 	
+	}
+	chdir(dir.c_str());
+	while((entry = readdir(dp)) != NULL) 
+	{
+		lstat(entry->d_name,&statbuf);
+		if(S_ISDIR(statbuf.st_mode)) 
+		{
+		if(strcmp(".",entry->d_name) == 0 ||strcmp("..",entry->d_name) == 0)
+		continue;
+        cout<<dir+"/"+string(entry->d_name)<<dest+"/"+string(entry->d_name);
+        createdirectory(dest+"/"+string(entry->d_name));
+		rec_dir_copy(dir+"/"+string(entry->d_name),dest+"/"+string(entry->d_name));
+	    }
+	    else 
+		{		
+            copyFiles(dir+"/"+string(entry->d_name),dest+"/"+string(entry->d_name));
+		}
+	}
+	chdir(basePath.c_str());
+	closedir(dp);
+	
+}	

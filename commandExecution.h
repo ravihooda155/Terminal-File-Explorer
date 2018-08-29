@@ -30,5 +30,6 @@ string createfile(string);
 void setCommandModeStatus(std::vector<char>&,std::string);
 std::vector<std::string> searchFile(std::string,std::vector<std::string>&,string);
 void snap_shot(string ,ofstream&);
+void rec_dir_copy(string,string );
 #endif  
 
