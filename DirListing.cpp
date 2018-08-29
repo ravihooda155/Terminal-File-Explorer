@@ -113,3 +113,28 @@ void display(int low,int high,vector<string>DirectryList)
 	cout<<"\u001b["<<high-low+2<<"A";
 	
 }
+void displaySearchResult(int low,int high,vector<string>DirectryList)
+{	
+	cout<<"\033c";//clear screen
+	char buffer[256];
+	string path = getcwd(buffer, 256);
+	cout<<path<<endl<<endl;
+	//cout<<DirectryList.size()<<endl;
+	 /*cout<<"\u001b[31m";
+	cout<<"Name"<<std::string( 26, ' ' )<<"Size"<<std::string( 15, ' ' )<<"Ownership"<<std::string( 18, ' ' )<<"Group"<<std::string( 18, ' ' )<<"User"<<std::string( 17, ' ' )<<"Last Modified"<<endl;
+	cout<<"\u001b[0m";*/
+	int i;
+	if(DirectryList.size()<25)
+	high=DirectryList.size();
+	cout<<"\u001b[33m";
+	for(i=low;i<high;i++)
+	{
+	cout<<DirectryList[i]<<endl;
+	
+	}
+	cout<<"\u001b[0m";
+	if(high<22)
+	cout<<"\u001b["<<high-low+2<<"A";
+	
+}
+

@@ -22,5 +22,6 @@ using namespace std;
 std::vector<std::string> addDirList(std::string);
 void listing(std::string);
 void display(int,int,std::vector<std::string>);
+void displaySearchResult(int,int,std::vector<std::string>);
 #endif  
 

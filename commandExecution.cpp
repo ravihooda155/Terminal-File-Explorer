@@ -1,5 +1,6 @@
 #include"commandExecution.h"
 #include<iostream>
+#include<bits/stdc++.h>
 #include<cstring>
 #include<string>
 
@@ -187,7 +188,19 @@ vector<string> searchFile(string dir,vector<string>&search1,string file)
 	    else 
 		{
 			if(string(entry->d_name)==file)
-			search1.push_back(dir+"/"+string(entry->d_name));
+			//search1.push_back(dir);
+			///////////////////////*
+				{vector<string> tokens;
+					
+					stringstream check1(dir);
+					string rawcode;
+					while(getline(check1, rawcode, '/'))
+					{
+						tokens.push_back(rawcode);
+					}	
+					search1.push_back(tokens[tokens.size()-1]);}
+			//////////////////
+			//search1.push_back(dir+"/"+string(entry->d_name));
 		
 		}
 	}

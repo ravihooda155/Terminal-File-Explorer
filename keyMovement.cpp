@@ -157,6 +157,7 @@ int disEnterKey(int curr_ptr,vector<string>&DirectryList)
 						struct stat buf;
 						string filename=CurrentPath;
 						stat(filename.c_str(),&buf);
+						
 						//cout << CurrentPath << endl;
 						if(S_ISDIR(buf.st_mode))
 						{	DirectryList.clear();

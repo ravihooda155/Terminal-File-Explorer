@@ -439,10 +439,14 @@ int main(int argc, char **argv)
 										mesg+=searchResult[i]+" "+"Found";
 									}
 									terminalMode="NORMAL";
-									
+									displaySearchResult(0,searchResult.size(),searchResult );
+									cout<<"\033[3;1H";
+									chdir(basePath.c_str());
+									DirectryList=searchResult;
+								     break;
 									
 								} 
-							chdir(basePath.c_str());
+							    chdir(basePath.c_str());
 								setCommandModeStatus(commandBuffer,mesg);
 							}
 							else 
