@@ -228,6 +228,26 @@ int main(int argc, char **argv)
 								//	mesg="File Successfully Copied";
 									setCommandModeStatus(commandBuffer,mesg);
 								}
+								//////snapshot////////////
+								if(tokens[0]=="snapshot")
+								{
+									string dest,basePath;
+									char buffer[256];
+									basePath = getcwd(buffer, 256);
+									dest=tokens[2];
+									
+									
+										string compSrc=basePath+"/"+tokens[1];
+										string compDest=basePath+"/"+dest;
+										
+										ofstream ofs;
+    									ofs.open (compDest, std::ofstream::out | std::ofstream::app);
+
+										snap_shot(compSrc,ofs);
+									
+									mesg="Dumped Successfully";
+									setCommandModeStatus(commandBuffer,mesg);
+								}
 								///////////move file////////////
 								else if(tokens[0]=="move_file")
 									{

@@ -195,3 +195,47 @@ vector<string> searchFile(string dir,vector<string>&search1,string file)
 	closedir(dp);
 	return search1;
 }
+
+void snap_shot(string dir,ofstream &of)
+{
+        DIR *dp;
+        struct dirent *entry;
+        struct stat statbuf;
+        queue<string>pathQueue;
+        if((dp = opendir(dir.c_str())) == NULL) {
+       // fprintf(stderr,"cannot open directory: %s\n", string(dir));
+            return;
+        }
+        chdir(dir.c_str());
+        while((entry = readdir(dp)) != NULL) 
+        {
+                lstat(entry->d_name,&statbuf);
+                if(S_ISDIR(statbuf.st_mode)) {
+                
+                if(string(entry->d_name)=="." ||(string(entry->d_name)) == "..")
+                continue;
+                //cout<<string(entry->d_name)<<" ";
+                of<<string(entry->d_name)<<" ";
+                pathQueue.push(string(entry->d_name));
+            
+               
+        }
+        else  
+        {//cout<<string(entry->d_name)<<"  ";
+        of<<string(entry->d_name)<<"  ";
+        }
+
+        }
+        while(!pathQueue.empty())
+        {
+         // cout<<endl<<endl<<"     ./"<<pathQueue.front()<<":"<<endl<<"         ";
+          of<<endl<<endl<<"     ./"<<pathQueue.front()<<":"<<endl<<"         ";
+             snap_shot(string(dir)+"/"+pathQueue.front(),of);
+                chdir((dir+"/"+pathQueue.front()).c_str());
+                pathQueue.pop();
+        }
+        
+               
+        closedir(dp);
+}
+	

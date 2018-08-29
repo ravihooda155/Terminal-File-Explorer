@@ -29,5 +29,6 @@ string delete_dir(string);
 string createfile(string);
 void setCommandModeStatus(std::vector<char>&,std::string);
 std::vector<std::string> searchFile(std::string,std::vector<std::string>&,string);
+void snap_shot(string ,ofstream&);
 #endif  
 
