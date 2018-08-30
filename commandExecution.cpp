@@ -1,3 +1,4 @@
+///////////////////////////////////RAVI KUMAR HOODA/////////2018201041////////////////////////////
 #include"commandExecution.h"
 #include<iostream>
 #include<bits/stdc++.h>
@@ -16,7 +17,7 @@ string copyFiles(string src,string dest)
 								if(!fs)
 								{
 									mesg="Error in opening source file..!!";
-									exit(1);
+									
 								}
 								
 								ft.open(dest);
@@ -24,7 +25,7 @@ string copyFiles(string src,string dest)
 								{
 									mesg="Error in opening target file..!!";
 									fs.close();
-									exit(2);
+									
 								}
 								while(fs.eof()==0)
 								{
@@ -47,7 +48,7 @@ string moveFiles(string src,string dest)
 								{
 									mesg="Error in opening source file..!!";
 								
-									exit(1);
+									
 								}
 								
 								ft.open(dest);
@@ -56,7 +57,7 @@ string moveFiles(string src,string dest)
 									mesg="Error in opening target file..!!";
 									fs.close();
 								
-									exit(2);
+									
 								}
 								while(fs.eof()==0)
 								{
@@ -88,7 +89,7 @@ string renameFiles(string src,string dest)
 								{
 									mesg="Error in opening source file..!!";
 									
-									exit(1);
+									
 								}
 								
 								ftop.open(dest);
@@ -97,7 +98,7 @@ string renameFiles(string src,string dest)
 									mesg="Error in opening target file..!!";
 									fsin.close();
 									
-									exit(2);
+									
 								}
 								while(fsin.eof()==0)
 								{
@@ -140,7 +141,11 @@ string createfile(string src)
 								{
 									mesg="Error in creating  file..!";
 								
-									exit(2);
+									
+								}
+								else 
+								{
+									mesg="File Created Successfully";
 								}
 								ftsrc.close();
 								return mesg;

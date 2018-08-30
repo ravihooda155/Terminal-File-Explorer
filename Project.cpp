@@ -1,3 +1,4 @@
+///////////////////////////////////RAVI KUMAR HOODA/////////2018201041////////////////////////////
 #include<iostream>
 #include<bits/stdc++.h>
 #include<dirent.h>
@@ -76,14 +77,18 @@ int main(int argc, char **argv)
 	cout<<"\033[3;1H";
 	//cout<<"\u001b[25A";
 	//home directory 
+	char esc_start[] = { 0x1b, ']', '0', ';', 0 };
+    char esc_end[] = { 0x07, 0 };
+    
 	char buffer[256];
 	string home_path="";
 	string path = getcwd(buffer, 256);
 	home_path=path;
 	int curr_ptr=0;
 	while(1)
-	{
-
+	{   
+		cout << esc_start <<"************** NORMAL MODE **************"<< esc_end;
+		
 		if(terminalMode=="NORMAL")
 		{
 		
@@ -160,6 +165,8 @@ int main(int argc, char **argv)
 	}
 	/////////////Command Mode///////////////////////////
 	else if(terminalMode=="COMMAND"){
+		
+		cout << esc_start <<"************** COMMAND MODE **************"<< esc_end;
 		
 		while(keyy=getch())
 		{

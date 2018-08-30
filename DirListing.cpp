@@ -1,3 +1,4 @@
+///////////////////////////////////RAVI KUMAR HOODA/////////2018201041////////////////////////////
 #include"DirListing.h"
 #include<iostream>
 
@@ -36,12 +37,25 @@ void listing(string filename)
 		len=filename.size();
 
 		//file name
-		cout<<filename;
-		cout << std::string( 30-len, ' ' );
-
+		//cout<<filename;
+		//cout << std::string( 30-len, ' ' );
+			if(filename.length()<12)
+		{cout<<filename;
+		int x=12-filename.length();
+		cout<<std::string(x,' ');
+		}
+		else if(filename.length()>12)
+		{ string str=filename;
+		str.resize(10);
+		cout<<str<<"..";
+		}
+		else
+		{cout<<filename;
+		}
+		cout<<std::string(1,'\t');
 		//file size
 	
-		cout<<buf.st_size<<"B"<<std::string(2,'\t');
+		cout<<buf.st_size<<"B"<<std::string(1,'\t');
 
 		//ownership
 		 
@@ -55,7 +69,7 @@ void listing(string filename)
 	        cout<<( (buf.st_mode & S_IROTH) ? "r" : "-");
 	        cout<<( (buf.st_mode & S_IWOTH) ? "w" : "-");
 		cout<<( (buf.st_mode & S_IXOTH) ? "x" : "-");
-		cout<<std::string(2,'\t');
+		cout<<std::string(1,'\t');
 		
 		//group
 		grp = getgrgid(buf.st_gid);
@@ -71,14 +85,14 @@ void listing(string filename)
 		else
 		{cout<<grp->gr_name;
 		}
-		cout<<std::string(2,'\t');
+		cout<<std::string(1,'\t');
 		
 		//owner
 		pws = getpwuid(buf.st_uid);
 		cout << pws->pw_name;
 		if(strlen(pws->pw_name)<12)
 		cout<<std::string((12-strlen(pws->pw_name)),' ');
-		cout<<std::string(2,'\t');
+		cout<<std::string(1,'\t');
 
 		//file last modified
 		 tym = gmtime(&(buf.st_mtime));
