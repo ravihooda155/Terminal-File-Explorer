@@ -6,16 +6,16 @@
 #include<string>
 
 using namespace std;
-string home_path="";
+//string home_path="";
 stack<string>backward_history;
 stack<string>forward_history;
 
-void disHomeKey(string path,vector<string>&DirectryList)
+void disHomeKey(string& home_path,vector<string>&DirectryList)
 {
 	int low,high;
-	if(path!=home_path)
+//	if(path!=home_path)
 	{
-	home_path=path;
+//	home_path=path;
 	DirectryList.clear();
 	//vector<string>DirectryList;
 	DirectryList=addDirList(home_path);
@@ -150,8 +150,20 @@ int disEnterKey(int curr_ptr,vector<string>&DirectryList)
 						string path = getcwd(buffer, 256);
 						backward_history.push(path);
 						string CurrentPath;
+						vector<string> tokens;
+						
+						stringstream check1(path);
+						string rawcode;
+						while(getline(check1, rawcode, '/'))
+						{
+							tokens.push_back(rawcode);
+						}
+						if(tokens[tokens.size()-1]!=DirectryList[curr_ptr])
+						{
 						CurrentPath = path+"/"+DirectryList[curr_ptr];
 						int c=chdir(CurrentPath.c_str());
+						}
+						else CurrentPath=path;
 						//if(c<0)
 						//cout<<"error changing diectory";
 						//for checking directory
@@ -181,5 +193,6 @@ int disEnterKey(int curr_ptr,vector<string>&DirectryList)
 							}
 							
 						}
+						
 						return curr_ptr;
 }
