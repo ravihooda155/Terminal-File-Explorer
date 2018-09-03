@@ -25,7 +25,7 @@ int disDownKey(int,std::vector<std::string>&);
 int disLeftKey(int,std::vector<std::string>&);
 int disRightKey(int,std::vector<std::string>&);
 void disHomeKey(string&,std::vector<std::string>&);
-void disBackspaceKey(std::vector<std::string>&);
+void disBackspaceKey(std::vector<std::string>&,string);
 int disEnterKey(int,std::vector<std::string>&);
 #endif  
 

@@ -29,10 +29,15 @@ void disHomeKey(string& home_path,vector<string>&DirectryList)
 	//backward_history.pop();	
 	}					
 }
-void disBackspaceKey(vector<string>&DirectryList)
+void disBackspaceKey(vector<string>&DirectryList,string home_path)
 {
 	//cout<<"\033c";
-	int low,high;DirectryList.clear();
+	char buffer[256];
+	string path = getcwd(buffer, 256);
+	if(path!=home_path)
+	{
+	int low,high;
+	DirectryList.clear();
 	//vector<string>DirectryList;
 	DirectryList=addDirList("..");
 	int c=chdir("..");
@@ -43,19 +48,21 @@ void disBackspaceKey(vector<string>&DirectryList)
 	display(low,high,DirectryList);
 						//	cout<<"\u001b[25A";
 	cout<<"\033[3;1H";
+	}
 }
 int disUpKey(int curr_ptr,vector<string>&DirectryList)
 {
 	
-					if(curr_ptr>0&&curr_ptr<=DirectryList.size())
+					if(curr_ptr+1>0&&curr_ptr+1<=DirectryList.size())
 				{
-					if(curr_ptr<=25)
+					if(curr_ptr<25)
 					{curr_ptr--;cout<<"\u001b[1A";
+					//cout<<curr_ptr;
 					
 					}
 					else
 					{curr_ptr--;
-					display(curr_ptr-25,curr_ptr,DirectryList);cout<<"\u001b[1A";
+					display(curr_ptr-25+1,curr_ptr+1,DirectryList);//cout<<"\u001b[1A";
 					
 					}
 				
@@ -66,12 +73,13 @@ int disUpKey(int curr_ptr,vector<string>&DirectryList)
 }
 int disDownKey(int curr_ptr,vector<string>&DirectryList)
 {
-		if(curr_ptr<DirectryList.size()&&curr_ptr>=0)
+		if(curr_ptr+1<DirectryList.size()&&curr_ptr+1>=0)
 				{
 					
 					if(curr_ptr>=25)
-					{curr_ptr++;display(curr_ptr-25,curr_ptr,DirectryList);
-					cout<<"\u001b[1A";
+					{curr_ptr++;display(curr_ptr-25+1,curr_ptr+1,DirectryList);
+				//	cout<<curr_ptr;
+					//cout<<"\u001b[1A";
 					//errFlag=true;
 					}
 					else

@@ -98,7 +98,7 @@ void listing(string filename)
 		 tym = gmtime(&(buf.st_mtime));
 		  cout<<tym->tm_mday<<" "<<months[(tym->tm_mon)-1]<<" "<<tym->tm_hour<<":"<<tym->tm_min;
 		
-		cout<<endl;
+		
 	
 	 cout<<"\u001b[0m";
 	//cout<<"";
@@ -118,11 +118,16 @@ void display(int low,int high,vector<string>DirectryList)
 	if(DirectryList.size()<25)
 	high=DirectryList.size();
 	
-	for(i=low;i<high;i++)
+	for(i=low;i<high-1;i++)
 	{
+	
 	listing(DirectryList[i]);
+	cout<<endl;
 	
 	}
+	listing(DirectryList[i]);
+	cout<<endl;
+	cout<<"\u001b[1A";
 	if(high<22)
 	cout<<"\u001b["<<high-low+2<<"A";
 	

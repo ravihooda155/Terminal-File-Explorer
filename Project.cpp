@@ -126,7 +126,7 @@ int main(int argc, char **argv)
 			 ////////backspace key/////////
 			 if(key1==127)
 			 {
-				 disBackspaceKey(DirectryList);
+				 disBackspaceKey(DirectryList,home_path);
 				 curr_ptr=0;	
 			 }
 			 ///////////enter key//////////////////////
